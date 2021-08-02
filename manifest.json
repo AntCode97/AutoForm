@@ -10,11 +10,7 @@
         "storage",
         "activeTab",
         "tabs",
-        "scripting",
-        "contentSettings",
-        "tabs",
-        "http://*/*",
-        "https://*/*"
+        "scripting"
     ],
     "action": {
         "default_popup": "popup.html",
