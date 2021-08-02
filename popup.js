@@ -1,6 +1,6 @@
 ﻿// Initialize button with user's preferred color
 let start = document.getElementById("start");
-// let formText = document.getElementById("formText").value;
+
 
 // chrome.storage.sync.get("color", ({ color }) => {
 //     start.style.backgroundColor = color;
@@ -32,8 +32,27 @@ let start = document.getElementById("start");
 start.addEventListener("click", async () => {
     let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
     console.log("hi");
+    let inputText = document.getElementById("formText").value;
+    console.log(inputText);
+
+    // chrome.storage.sync.set({ "formText": inputText }, function () {
+    //     console.log("value is set to " + inputText);
+    // });
+    // let tabId = tab.id;
+    // chrome.tabs.executeScript(
+    //     tab.id, {
+    //     code: `console.log("hi");`
+    // }, function () {
+    //     chrome.tabs.executeScript(tab.id, { file: 'content.js' })
+    // });
+
+    // storage 기능을 이용하여 변수를 전달해야 한다고 한다
+    // https://developer.chrome.com/docs/extensions/reference/scripting/
+    //https://developer.chrome.com/docs/extensions/reference/storage/
     chrome.scripting.executeScript({
-        target: { tabId: tab.id },
+        target: {
+            tabId: tab.id
+        },
         function: starting,
     });
 });
@@ -49,13 +68,19 @@ function setPageBackgroundColor() {
 
 function starting() {
     window.setInterval(() => {
+        chrome.storage.sync.get(['formText'], function (result) {
+            console.log('Value currently is ' + result.formText)
+            //    console.log(formText);
+            var chatFrame = document.querySelector("#chatframe").contentDocument;
+            var chatInput = chatFrame.querySelector("div#input.yt-live-chat-text-input-field-renderer");
+            if (chatInput.innerText == "") {
+                chatInput.innerText = result.formText;
+                //            chatInput.innerText = "[광주_4반_이윤준]";
+            }
 
-        console.log("testset");
-        var chatFrame = document.querySelector("#chatframe").contentDocument;
-        var chatInput = chatFrame.querySelector("div#input.yt-live-chat-text-input-field-renderer");
-        if (chatInput.innerText == "") {
-            chatInput.innerText = "[광주_4반_이윤준]";
-        }
+        });
+
+
     }, 1000);
 
 }

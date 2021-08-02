@@ -2,6 +2,18 @@ let page = document.getElementById("buttonDiv");
 let selectedClassName = "current";
 const presetButtonColors = ["#3aa757", "#e8453c", "#f9bb2d", "#4688f1"];
 
+
+let submitBtn = document.getElementById("submit-btn");
+
+submitBtn.addEventListener("click", function () {
+    console.log("HI");
+    let inputText = document.getElementById("formText").value;
+    chrome.storage.sync.set({ "formText": inputText }, function () {
+        console.log("value is set to " + inputText);
+    });
+})
+
+
 // Reacts to a button click by marking the selected button and saving
 // the selection
 function handleButtonClick(event) {
