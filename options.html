@@ -2,18 +2,21 @@
 <html>
 
 <head>
-    <link rel="stylesheet" href="button.css">
+    <link rel="stylesheet" href="./css/bootstrap.min.css">
 </head>
 
 <body>
-    <div id="buttonDiv">
-    </div>
-    <div>
-        <p>Choose a different background color!</p>
-        <input type="text" id="formText">
-        <button id="submit-btn"></button>
 
+    <div>
+        <p>Make Chat Reservation</p>
     </div>
+    <input type="datetime-local" id="reservation">
+    <input class="form-control" type="text" id="reservationChat" value="Enter your chat">
+    <button id="reservationBtn">
+        예약
+    </button>
+    <ol id="reservationList">
+    </ol>
 </body>
 <script src="options.js"></script>
 
