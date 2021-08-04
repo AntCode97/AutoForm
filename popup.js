@@ -32,35 +32,78 @@ stopBtn.addEventListener("click", async () => {
 
 
 function start() {
+    //let formText;
     let makeForm = setInterval(() => {
         chrome.storage.sync.get(['formText'], function (result) {
+            // formText = result.formText;
             //console.log('Value currently is ' + result.formText)
             //    console.log(formText);
-
             var chat = document.querySelector("div#input.style-scope.yt-live-chat-text-input-field-renderer");
             if (chat != null) {
                 if (chat.innerText == "") {
                     chat.innerText = result.formText;
-                    //            chatInput.innerText = "[광주_4반_이윤준]";
+
                 }
             } else {
                 var chatFrame = document.querySelector("#chatframe").contentDocument;
                 var chatInput = chatFrame.querySelector("div#input.yt-live-chat-text-input-field-renderer");
+                var chatBtn = chatFrame.querySelector("div#send-button.style-scope.yt-live-chat-message-input-renderer");
+
                 if (chatInput.innerText == "") {
                     chatInput.innerText = result.formText;
-                    //            chatInput.innerText = "[광주_4반_이윤준]";
+                    chatInput.removeAttribute('aria-invalid'); // 없어도 무방하나 일단 넣어둠
+
+                    chatInput.click();
+
+
                 }
             }
 
-
-
         });
-
-
     }, 1000);
 
     chrome.storage.sync.set({ "makeForm": makeForm }, function () {
         //console.log("value is set to " + makeForm);
+    });
+    let now = new Date();
+    chrome.storage.sync.get(['reservationDict'], function (result) {
+        console.log('Value currently is ' + result)
+
+        for (key in result.reservationDict) {
+            var year = Number(key.substring(0, 4));
+            var month = Number(key.substring(5, 7));
+            var day = Number(key.substring(8, 10));
+            var time = Number(key.substring(11, 13));
+            var minute = Number(key.substring(14, 16));
+
+            //console.log(year, month, day, time, minute);
+            var oprDate = new Date(year, month - 1, day, time, minute);
+            //console.log(oprDate, now)
+            //console.log(oprDate - now);
+            if (oprDate - now > 0) {
+                setTimeout(function () {
+
+                    chrome.storage.sync.get(['formText'], function (formText) {
+                        var chat = document.querySelector("div#input.style-scope.yt-live-chat-text-input-field-renderer");
+                        if (chat != null) {
+                            chat.innerText = formText.formText + result.reservationDict[key];
+                        } else {
+
+                            var chatFrame = document.querySelector("#chatframe").contentDocument;
+                            var chatInput = chatFrame.querySelector("div#input.yt-live-chat-text-input-field-renderer");
+                            chatInput.innerText = formText.formText + result.reservationDict[key];
+                        }
+
+                    });
+
+                }, oprDate - now);
+            } else {
+                delete result.reservationDict[key];
+                chrome.storage.sync.set({ "reservationDict": result.reservationDict }, function () {
+
+                });
+            }
+        }
     });
 }
 
@@ -74,6 +117,7 @@ function start2() {
             //console.log('Value currently is ' + result.formText)
             //    console.log(formText);
             if (chatInput.innerText == "") {
+
                 chatInput.innerText = result.formText;
             }
         });

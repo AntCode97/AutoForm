@@ -11,3 +11,25 @@ body{
 .form-control{
     width: 200vh;
 }
+.reservation-input{
+    text-align: center;
+    width: 40vh;
+    margin-top: 2vh;
+    margin-bottom: 2vh;
+    margin-left: auto;
+    margin-right: auto;
+}
+.reservationList{
+    width: 40vh;
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+
+    vertical-align: middle;
+}
+
+.btn-close {
+    vertical-align: middle;
+    text-align: center;
+    margin-left: 1vh;
+}
