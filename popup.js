@@ -75,10 +75,8 @@ function start() {
                     //console.log(year, month, day, time, minute);
 
                     var oprDate = new Date(year, month - 1, day, time, minute);
-                    //console.log(oprDate, count);
-                    //console.log(oprDate, now)
-                    //console.log(oprDate - now);
-                    console.log(key, result.reservationDict[key], count);
+
+
                     let reservationText = result.reservationDict[key];
                     if (oprDate - now >= -1000) {
                         setTimeout(function () {
