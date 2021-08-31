@@ -11,16 +11,16 @@ let makeReservation = function () {
     console.log(selectDate);
 
 
-    chrome.storage.sync.get(['reservationDict'], function (result) {
+    chrome.storage.local.get(['reservationDict'], function (result) {
         if (result.reservationDict != null) {
             result.reservationDict[selectDate] = chatText;
-            chrome.storage.sync.set({ "reservationDict": result.reservationDict }, function () {
+            chrome.storage.local.set({ "reservationDict": result.reservationDict }, function () {
                 console.log(reservationresult.reservationDict);
             });
         } else {
             let reservationDict = {};
             reservationDict[selectDate] = chatText;
-            chrome.storage.sync.set({ "reservationDict": reservationDict }, function () {
+            chrome.storage.local.set({ "reservationDict": reservationDict }, function () {
                 console.log(reservationDict);
             });
         }
@@ -36,11 +36,11 @@ let makeReservation = function () {
     reservation.appendChild(deleteBtn);
     deleteBtn.addEventListener("click", function () {
 
-        chrome.storage.sync.get(['reservationDict'], function (result) {
+        chrome.storage.local.get(['reservationDict'], function (result) {
             if (result.reservationDict != null) {
 
                 delete result.reservationDict[selectDate];
-                chrome.storage.sync.set({ "reservationDict": result.reservationDict }, function () {
+                chrome.storage.local.set({ "reservationDict": result.reservationDict }, function () {
                     console.log(result.reservationDict);
                 });
             }
@@ -53,7 +53,7 @@ let makeReservation = function () {
     reservationList.appendChild(reservation);
 
 
-    chrome.storage.sync.set({ "reservationDict": reservationDict }, function () {
+    chrome.storage.local.set({ "reservationDict": reservationDict }, function () {
         console.log("value is set to " + reservationDict);
     });
 
@@ -64,7 +64,7 @@ let makeReservation = function () {
 reservationBtn.addEventListener('click', makeReservation);
 
 
-chrome.storage.sync.get(['reservationDict'], function (result) {
+chrome.storage.local.get(['reservationDict'], function (result) {
 
     console.log(result);
     for (key in result.reservationDict) {
@@ -86,7 +86,7 @@ chrome.storage.sync.get(['reservationDict'], function (result) {
 
             delete result.reservationDict[selectDate];
             this.parentElement.remove();
-            chrome.storage.sync.set({ "reservationDict": result.reservationDict }, function () {
+            chrome.storage.local.set({ "reservationDict": result.reservationDict }, function () {
                 console.log(result.reservationDict);
             });
         })

@@ -1,13 +1,21 @@
 ﻿let startBtn = document.getElementById("start");
 let stopBtn = document.getElementById("stop");
+let formText = document.getElementById("formText");
+chrome.storage.local.get(['formText'], function (result) {
+    //console.log(result.formText);
+    if (result.formText) {
+        formText.value = result.formText;
+    }
+ });
 
 startBtn.addEventListener("click", async () => {
     let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+    console.log(tab.url);
     console.log("hi");
     let inputText = document.getElementById("formText").value;
     console.log(inputText);
 
-    chrome.storage.sync.set({ "formText": inputText }, function () {
+    chrome.storage.local.set({ "formText": inputText }, function () {
         console.log("value is set to " + inputText);
     });
 
@@ -34,10 +42,11 @@ stopBtn.addEventListener("click", async () => {
 function start() {
     //let formText;
     let makeForm = setInterval(() => {
-        chrome.storage.sync.get(['formText'], function (result) {
+        chrome.storage.local.get(['formText'], function (result) {
             // formText = result.formText;
             //console.log('Value currently is ' + result.formText)
             //    console.log(formText);
+
             var chat = document.querySelector("div#input.style-scope.yt-live-chat-text-input-field-renderer");
             if (chat != null) {
                 if (chat.innerText == "") {
@@ -61,7 +70,7 @@ function start() {
 
 
             let now = new Date();
-            chrome.storage.sync.get(['reservationDict'], function (result) {
+            chrome.storage.local.get(['reservationDict'], function (result) {
                 //console.log('Value currently is ' + result)
                 let count = 0;
                 for (key in result.reservationDict) {
@@ -81,7 +90,7 @@ function start() {
                     if (oprDate - now >= -1000) {
                         setTimeout(function () {
 
-                            chrome.storage.sync.get(['formText'], function (formText) {
+                            chrome.storage.local.get(['formText'], function (formText) {
                                 var chat = document.querySelector("div#input.style-scope.yt-live-chat-text-input-field-renderer");
                                 if (chat != null) {
                                     chat.innerText = formText.formText + reservationText;
@@ -97,7 +106,7 @@ function start() {
                         }, oprDate - now);
                     } else {
                         delete result.reservationDict[key];
-                        chrome.storage.sync.set({ "reservationDict": result.reservationDict }, function () {
+                        chrome.storage.local.set({ "reservationDict": result.reservationDict }, function () {
 
                         });
                     }
@@ -109,7 +118,7 @@ function start() {
     }, 1000);
 
 
-    chrome.storage.sync.set({ "makeForm": makeForm }, function () {
+    chrome.storage.local.set({ "makeForm": makeForm }, function () {
         //console.log("value is set to " + makeForm);
     });
 }
@@ -120,7 +129,7 @@ function start2() {
 
 
     var makeForm = function () {
-        chrome.storage.sync.get(['formText'], function (result) {
+        chrome.storage.local.get(['formText'], function (result) {
             //console.log('Value currently is ' + result.formText)
             //    console.log(formText);
             if (chatInput.innerText == "") {
@@ -134,27 +143,31 @@ function start2() {
     chatInput.addEventListener("click", makeForm)
 
 
-    chrome.storage.sync.set({ "makeForm": makeForm }, function () {
+    chrome.storage.local.set({ "makeForm": makeForm }, function () {
         //console.log("value is set to " + makeForm);
     });
 }
 
 function stop() {
 
-    chrome.storage.sync.get(['makeForm'], function (result) {
+    chrome.storage.local.get(['makeForm'], function (result) {
         // console.log('Value currently is ' + result.makeForm)
         clearInterval(result.makeForm);
     });
 
 }
 
-function stop2() {
 
-    chrome.storage.sync.get(['makeForm'], function (result) {
-        let chatFrame = document.querySelector("#chatframe").contentDocument;
-        let chatInput = chatFrame.querySelector("div#input.yt-live-chat-text-input-field-renderer");
 
-        chatInput.removeEventListener('click', result.makeForm);
-    });
-
-}
+function stringToUrl(input) {
+    // Start with treating the provided value as a URL
+    try {
+      return new URL(input);
+    } catch {}
+    // If that fails, try assuming the provided input is an HTTP host
+    try {
+      return new URL("http://" + input);
+    } catch {}
+    // If that fails ¯\_(ツ)_/¯
+    return null;
+  }
